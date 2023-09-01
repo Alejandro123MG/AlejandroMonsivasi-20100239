@@ -25,7 +25,34 @@ color: blue;
 }
 #par2{
     font-size: 30px;
-    
+}
+tbody tr:nth-child(odd){
+    background-color: aqua;
+}
+td:hover{
+    background-color: burlywood;
+    color: azure;
+}
+td:active{
+    background-color: brown;
+}
+tbody tr:first-child {
+    font-weight: bold;
+}
+tbody tr:last-child {
+    font-style: italic;
+}
+tbody tr:first-child td {
+    background-color: yellow;
+}
+tbody tr:last-child td {
+    background-color: green;
+}
+tbody tr td:first-child {
+    border-right: 2px solid red;
+}
+tbody tr td:last-child {
+    border-left: 2px solid blue;
 }
 </style>
 <body>
@@ -41,8 +68,27 @@ color: blue;
         </div>
 
 
-    <p id="par1" class="parrafo">parrafo 1 Asegúrate de estar en la rama "main" en tu repositorio local:</p>
+       <p id="par1" class="parrafo">parrafo 1 Asegúrate de estar en la rama "main" en tu repositorio local:</p>
        <p id="par2" class="parrafo">parrafo 2 Realiza un "pull" para obtener los cambios más recientes del repositorio remoto:</p>
        <p id="par3" class="parrafo">parrafo 3 Después de hacer el pull, ahora puedes intentar hacer push nuevamente:</p>
+
+       <table>
+        <thead>
+        <tr>
+            <th>Columna 1</th><th>Columna 2</th><th>Columno 3</th>
+        </tr>
+        </thead>
+        <tbody>
+            
+            <tr><td>celda 1-1</td><td>celda 1-2</td><td>celda 1-3</td></tr>
+            <tr><td>celda 2-1</td><td>celda 2-2</td><td>celda 2-3</td></tr>
+            <tr><td>celda 3-1</td><td>celda 3-2</td><td>celda 3-3</td></tr>
+            <tr><td>celda 4-1</td><td>celda 4-2</td><td>celda 4-3</td></tr>
+            <tr><td>celda 5-1</td><td>celda 5-2</td><td>celda 5-3</td></tr>
+            <tr><td>celda 6-1</td><td>celda 6-2</td><td>celda 6-3</td></tr>
+            
+        </tbody>
+        
+       </table>
 </body>
 </html>
