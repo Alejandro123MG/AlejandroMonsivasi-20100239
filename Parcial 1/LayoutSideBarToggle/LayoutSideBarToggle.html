@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+*{
+box-sizing: border-box;
+margin:0;
+padding: 0;
+}
+body{
+    width: 100vw;
+    height: 100vh;
+}
+.cont{
+border: 2px solid blue;
+background-color: aqua;
+color: blue;
+height: 100%;
+position: absolute;
+}
+.headd{
+    border: 2px solid green;
+    background-color: forestgreen;
+    color: black;
+    text-align: center;  
+}
+
+
+#sidebar{
+    width: 30%;
+}
+#content{
+    left:  30%;
+    width: 70%;
+}
+input#toggle{
+    display: none;
+}
+
+input:checked + div#sidebar{
+display: none;
+}
+
+input:checked ~ div#sidebar{
+display: none;
+}
+input:checked ~ div#content{
+width: 100%;
+}
+
+</style>
+<body>
+    <div class="headd" id="headd">headd</div>
+    <input id="toggle" type="checkbox">
+    <div class="cont" id="sidebar">sidebar</div>
+    <div class="cont" id="content">
+        <label for="toggle">Menu</label>
+        <center>contenido</center>
+    </div>
+</body>
+</html>
