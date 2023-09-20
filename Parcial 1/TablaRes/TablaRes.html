@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horario</title>
+</head>
+<style>
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+table {
+    width: 100%;
+}
+
+table, thead, tbody, tr, th, td{
+    border: 1px solid blue;
+    border-collapse:collapse;
+}
+
+@media screen and (max-width:600px){
+    table,thead,tbody,tr,th,td{
+        display:block;
+    }
+    thead{
+        display: none;
+    }
+    td{
+        padding-left: 50%;
+    }
+    td:nth-child(1)::before{padding-left: 0; text-align: center; background-color: blueviolet;}
+    td:nth-child(2)::before{content:"Lunes"; position:absolute; left: 10px;}
+    td:nth-child(3)::before{content:"Martes"; position:absolute; left: 10px;}
+    td:nth-child(4)::before{content:"Miercoles"; position:absolute; left: 10px;}
+    td:nth-child(5)::before{content:"Jueves"; position:absolute; left: 10px;}
+    td:nth-child(6)::before{content:"Viernes"; position:absolute; left: 10px;}
+}
+
+tbody tr:nth-child(odd){
+        background-color: aqua;
+    }
+    tbody tr:first-child {
+        font-weight: bold;
+    }
+    tbody tr:last-child {
+        font-style: italic;
+    }
+    tbody tr:first-child td {
+        background-color: yellow;
+    }
+    tbody tr:last-child td {
+        background-color: green;
+    }
+    tbody tr td:last-child {
+        border-left: 2px solid blue;
+    }
+    thead tr th {
+        background-color: lightgray;
+        font-weight: bold;
+    }
+    thead tr:last-child th {
+        background-color: darkgray;
+        color: white;
+    }
+    th:nth-child(2) {
+        text-transform: uppercase;
+    }
+    th:nth-child(3) {
+        text-decoration: underline;
+    }
+ </style>
+<body>
+    <table>
+        <thead>
+        <tr>
+            <th>Hora</th><th>Lunes</th><th>Martes</th><th>Miercoles</th><th>Jueves</th><th>Viernes</th>
+        </tr>
+        </thead>
+        <tbody>
+            
+            <tr><td>7:00 - 8:00</td><td>Programacion web</td><td>Programacion web</td><td>Programacion web</td><td>Programacion web</td><td>Programacion web</td></tr>
+            <tr><td>8:00 - 10: 00</td><td>Arquitectura de computadoras</td><td>Sistemas operativos</td><td>Arquitectura de computadoras</td><td>Sistemas operativos</td><td>Arquitectura de computadoras</td></tr>
+            <tr><td>10:00 - 11:00</td><td>Topicos avanzados de programacion</td><td>Topicos avanzados de programacion</td><td>Topicos avanzados de programacion</td><td>Topicos avanzados de programacion</td><td>Topicos avanzados de programacion</td></tr>
+            <tr><td>2:00 - 3:00</td><td>-</td><td>Taller de investigacion</td><td>Taller de investigacion</td><td>Taller de investigacion</td><td>Taller de investigacion</td></tr>
+                       
+        </tbody>
+        
+       </table>
+</body>
+</html>
