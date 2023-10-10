@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Gato</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,9 +16,9 @@
             width: 100vw;
             background-color: rgb(107, 39, 255);
             display: grid;
-            grid-template-columns: 25% 25% 25%;/* repeat(3, 1fr);*/ 
-            grid-template-rows:25% 25% 25%; /*repeat(3, 1fr);
-*/  justify-content: center;
+            grid-template-columns: 25% 25% 25%; 
+            grid-template-rows: 25% 25% 25%; 
+            justify-content: center;
         }
 
         .caja {
@@ -30,6 +30,17 @@
             align-items: center;
             justify-content: center;
         }
+
+        .jugador-x {
+            color: rgb(234, 234, 244); /* Color para el jugador X */
+            background-color: blue;
+        }
+
+        .jugador-o {
+            color: rgb(11, 11, 11); /* Color para el jugador O */
+            background-color: red;
+        }
+
         #btn {
             padding: 10px 20px;
             font-size: 24px;
@@ -57,9 +68,7 @@
         <div class="caja" id="caja7"></div>
         <div class="caja" id="caja8"></div>
         <div class="caja" id="caja9"></div>
-        <div><button id="btn" type="button">Limpiar</button>
-        </div>
-       
+        <div><button id="btn" type="button">Limpiar</button></div>
     </div>
 
     <script>
@@ -71,21 +80,24 @@
                 if (box.innerText === "") {
                     if (xo === "X") {
                         xo = "O";
+                        box.classList.add("jugador-o");
                     } else {
                         xo = "X";
+                        box.classList.add("jugador-x");
                     }
                     box.innerText = xo;
                 }
             });
         });
 
-        document.getElementById("btn").addEventListener("click",function(){
-            let cajas= document.getElementsByClassName("caja");
+        document.getElementById("btn").addEventListener("click", function() {
+            let cajas = document.getElementsByClassName("caja");
 
-            for (const elemento of cajas ){
-            elemento.innerText="";
+            for (const elemento of cajas) {
+                elemento.innerText = "";
+                elemento.classList.remove("jugador-x", "jugador-o");
             }
-        })
+        });
     </script>
 </body>
 </html>
