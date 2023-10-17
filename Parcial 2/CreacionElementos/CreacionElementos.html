@@ -9,46 +9,68 @@
     <div id="contenedor"></div>
     <script>
         let encabezados=['Nombre','ApellidoP','ApellidoM'];
-        let datos=[{nombre: 'Alejandro',apellidoP: 'Monisvais',apellidoM:'Guillen'},
-                  {nombre: 'Abel',apellidoP: 'Monisvais',apellidoM:'Guillen'},
-                  {nombre: 'Rodrigo',apellidoP: 'Monisvais',apellidoM:'Guillen'}
+        let datos=[{nombre: 'Alejandro',apellidoP: 'Monsivais',apellidoM:'Guillen'},
+                  {nombre: 'Abel',apellidoP: 'Monsivais',apellidoM:'Guillen'},
+                  {nombre: 'Rodrigo',apellidoP: 'Monsivais',apellidoM:'Guillen'},
+                  {nombre: 'Maria',apellidoP: 'Monsivais',apellidoM:'Guillen'}
                 ];
 
         let tab= document.createElement("table");
+        tab.style.width = "100%";
+        tab.style.borderCollapse = "collapse";
+        
+
         let enc= document.createElement("thead");
         let fil= document.createElement("tr");
-        
 
         encabezados.forEach(elemento =>{
             let th= document.createElement("th");
             th.innerText=elemento;
+            th.style.padding = "10px";
+            th.style.textAlign = "left";
+            th.style.border = "2px solid #ccc";
+            th.style.backgroundColor = "#676363";
             fil.appendChild(th);
         });
         enc.appendChild(fil);
         tab.appendChild(enc);
 
-        tbody=document.createElement("tbody");
+        let tbody=document.createElement("tbody");
         datos.forEach(function(elemento){
-
             let fila= document.createElement("tr");
 
             let td1= document.createElement("td");
             td1.innerText=elemento.nombre;
+            td1.style.padding = "10px";
+            td1.style.textAlign = "left";
+            td1.style.border = "1px solid #ccc";
             fila.appendChild(td1);
 
             let td2= document.createElement("td");
             td2.innerText=elemento.apellidoP;
+            td2.style.padding = "10px";
+            td2.style.textAlign = "left";
+            td2.style.border = "1px solid #ccc";
             fila.appendChild(td2);
 
             let td3= document.createElement("td");
             td3.innerText=elemento.apellidoM;
+            td3.style.padding = "10px";
+            td3.style.textAlign = "left";
+            td3.style.border = "1px solid #ccc";
             fila.appendChild(td3);
 
             tbody.appendChild(fila);
-        })
-       
+        });
+
         tab.appendChild(tbody);
         document.getElementById("contenedor").appendChild(tab);
+
+        // Establecer estilos para filas pares del tbody
+        const evenRows = document.querySelectorAll("tbody tr:nth-child(even)");
+        evenRows.forEach((row) => {
+            row.style.backgroundColor = "#B6B2B2";
+        });
     </script>
 </body>
 </html>
