@@ -19,7 +19,7 @@
             grid-template-columns: 15% 15% 15%; 
             grid-template-rows: 15% 15% 15%; 
             justify-content: center;
-            align-items:stretch;
+            align-items: stretch;
             align-content: center;
         }
 
@@ -62,7 +62,8 @@
             justify-self: center;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.all.min.js"></script>
+    <!-- Incluye SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css">
 </head>
 <body>
     <div class="contenedor">
@@ -75,12 +76,15 @@
         <div class="caja" id="caja7"></div>
         <div class="caja" id="caja8"></div>
         <div class="caja" id="caja9"></div>
-       
-        
+        <div class="cajas" id="caja10"></div>
+        <div class="cajas" id="caja11"><button id="btn" type="button">Limpiar</button></div>
     </div>
 
+    <!-- Incluye SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.all.min.js"></script>
+
     <script>
-      var xo = "X";
+        var xo = "X";
         var boxes = document.querySelectorAll('.caja');
         var moves = 0;
 
@@ -150,7 +154,11 @@
                 elemento.classList.remove("jugador-x", "jugador-o");
             }
         }
+
+        // Limpiar el juego al hacer clic en el botón "Limpiar"
+        document.getElementById("btn").addEventListener("click", function() {
+            resetGame();
+        });
     </script>
-    
 </body>
 </html>
