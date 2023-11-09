@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de GitHub</title>
+</head>
+<body>
+    <h1>Información de tu repositorio</h1>
+    <div id="result"></div>
+
+    <script>
+        // Tu token de acceso personal
+        const accessToken = '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';
+
+        // URL de la API de GitHub para obtener información de un repositorio
+        const apiUrl = 'https://api.github.com/repos/Alejandro123MG/AlejandroMonsivasi-20100239';
+
+        // Configuración de la solicitud
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': `token ${accessToken}`,
+            }
+        };
+
+        // Realizar la solicitud a la API de GitHub
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                // Acceder a información específica y mostrarla
+                const resultElement = document.getElementById('result');
+                resultElement.innerHTML = `
+                    <p><strong>Nombre:</strong> ${data.name}</p>
+                    <p><strong>Descripción:</strong> ${data.description}</p>
+                    <p><strong>Propietario:</strong> ${data.owner.login}</p>
+                `;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>

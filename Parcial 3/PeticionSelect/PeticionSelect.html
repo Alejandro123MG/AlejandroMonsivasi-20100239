@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecciona una Raza de Perro</title>
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        #breedSelect {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #dogImages {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px auto;
+        }
+
+        #dogImages img {
+            width: 250px;
+            height: auto;
+            margin: 10px;
+            border: 3px solid #333;
+            border-radius: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Selecciona una Raza de Perro</h1>
+    <select id="breedSelect">
+        <!-- Opciones de raza se cargarán aquí dinámicamente -->
+    </select>
+    <div id="dogImages">
+        <!-- Las imágenes de perros se cargarán aquí dinámicamente -->
+    </div>
+
+    <script>
+        const breedSelect = document.getElementById("breedSelect");
+        const dogImages = document.getElementById("dogImages");
+
+        // Obtener la lista de razas de perros desde la API
+        fetch('https://dog.ceo/api/breeds/list/all')
+            .then(response => response.json())
+            .then(data => {
+                const breeds = data.message;
+                // Agregar opciones al select
+                for (const breed in breeds) {
+                    const option = document.createElement("option");
+                    option.value = breed;
+                    option.textContent = breed;
+                    breedSelect.appendChild(option);
+                }
+            });
+
+        // Manejar el evento de cambio en el select
+        breedSelect.addEventListener("change", () => {
+            const selectedBreed = breedSelect.value;
+            // Obtener imágenes de la raza seleccionada
+            fetch(`https://dog.ceo/api/breed/${selectedBreed}/images/random/50`)   
+                .then(response => response.json())
+                .then(data => {
+                    const images = data.message;
+                    dogImages.innerHTML = ""; // Limpiar imágenes anteriores
+                    // Mostrar las imágenes
+                    images.forEach(imageUrl => {
+                        const img = document.createElement("img");
+                        img.src = imageUrl;
+                        dogImages.appendChild(img);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
