@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap Ejemplo</title>
+  <!-- Incluye Bootstrap desde tu proyecto -->
+  <link rel="stylesheet" href="./bootstrap.min.css" />
+</head>
+<body>
+
+<!-- Contenedor para la tabla Bootstrap -->
+<div class="container mt-5">
+  <table class="table">
+    <thead>
+      <!-- Encabezados de la tabla -->
+      <tr id="table-headers"></tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+</div>
+
+<!-- Incluye Bootstrap JS (opcional, pero necesario para algunas funciones de Bootstrap) -->
+<script src="./bootstrap.min.js"></script>
+
+<script>
+// Hacer una solicitud a tu servidor Express
+fetch('http://localhost:3000/datos')
+  .then(response => response.json())
+  .then(data => {
+    // Obtener las claves (encabezados) de la primera fila de datos
+    const headers = Object.keys(data[0]);
+
+    // Rellenar los encabezados de la tabla
+    const tableHeaders = document.getElementById('table-headers');
+    headers.forEach(header => {
+      const th = document.createElement('th');
+      th.textContent = header;
+      tableHeaders.appendChild(th);
+    });
+
+    // Rellenar los datos de la tabla
+    const tableBody = document.getElementById('table-body');
+    data.forEach(row => {
+      const tr = document.createElement('tr');
+      headers.forEach(header => {
+        const td = document.createElement('td');
+        td.textContent = row[header];
+        tr.appendChild(td);
+      });
+      tableBody.appendChild(tr);
+    });
+  })
+  .catch(error => console.error('Error al obtener datos:', error));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="node_modules/jspdf/dist/jspdf.umd.min.js"></script>
+  <script src="node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"></script>
+
+
+  <title>Formulario</title>
+</head>
+<style>
+  .custom-container {
+    border: 3px solid #18191a; 
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 100px;
+    max-width: 800px; 
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>  
+
+
+<body>
+
+<div class="container mt-5 custom-container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2 class="text-center mb-4">Formulario</h2>
+      <form id="userForm">
+        <div class="form-group" >
+          <label for="usuario_nombre">Nombre:</label>
+          <input type="text" class="form-control" id="usuario_nombre" placeholder="Ingrese su nombre">
+        </div>
+        <div class="form-group">
+          <label for="usuario_apellido">Apellido:</label>
+          <input type="text" class="form-control" id="usuario_apellido" placeholder="Ingrese su apellido">
+        </div>
+        <div class="form-group">
+          <label for="usuario_usuario">Nombre de Usuario:</label>
+          <input type="text" class="form-control" id="usuario_usuario" placeholder="Ingrese su nombre de usuario">
+        </div>
+        <div class="form-group">
+          <label for="usuario_clave">Contraseña:</label>
+          <input type="password" class="form-control" id="usuario_clave" placeholder="Ingrese su contraseña">
+        </div>
+        <div class="form-group">
+          <label for="usuario_email">Correo Electrónico:</label>
+          <input type="email" class="form-control" id="usuario_email" placeholder="Ingrese su correo electrónico">
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary btn-sm mr-2" onclick="registrarUsuario()">Registrar</button>
+          <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#eliminarModal">Eliminar</button>
+          <button type="button" class="btn btn-primary btn-sm mr-2" onclick="Modificar()">Modificar</button>
+          <button type="button" class="btn btn-primary btn-sm mr-2" onclick="cambiarVista()">Buscar</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="generarPDF()">PDF</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Ventana modal para eliminar usuario -->
+<div class="modal fade" id="eliminarModal" tabindex="-1" role="dialog" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eliminarModalLabel">Eliminar Usuario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="usuario_id_eliminar_modal">ID del Usuario a Eliminar:</label>
+          <input type="text" class="form-control" id="usuario_id_eliminar_modal" placeholder="Ingrese el ID del usuario">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="eliminarUsuario()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="text-center mt-4">Usuarios</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Usuario</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody id="tablaUsuariosBody">
+    <!-- Aquí se agregarán las filas de la tabla dinámicamente -->
+  </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function cambiarVista() {
+     
+     window.location.href = "http://localhost/PracticaGit/Parcial%203/form/Buscar.html";
+   }
+   function Modificar() {
+    
+    window.location.href = "http://localhost/PracticaGit/Parcial%203/form/Modificar.html";
+  }
+
+
+ // Función para actualizar la tabla de usuarios
+  function actualizarTablaUsuarios(usuarios) {
+    // Limpiar el contenido actual de la tabla
+    $('#tablaUsuariosBody').empty();
+
+    usuarios.forEach(usuario => {
+      const fila = `<tr>
+                      <td>${usuario.usuario_id}</td>
+                      <td>${usuario.usuario_nombre}</td>
+                      <td>${usuario.usuario_apellido}</td>
+                      <td>${usuario.usuario_usuario}</td>
+                      <td>${usuario.usuario_email}</td>
+                    </tr>`;
+      $('#tablaUsuariosBody').append(fila);
+    });
+  }
+
+  // Función para obtener y mostrar todos los usuarios
+  function mostrarUsuarios() {
+    // Realizar solicitud GET al servidor
+    $.ajax({
+      type: 'GET',
+      url: 'http://localhost:3200/usuarios',
+      success: function (response) {
+        actualizarTablaUsuarios(response);
+      },
+      error: function (error) {
+        Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al obtener usuarios',
+        });
+        console.error(error);
+      }
+    });
+  }
+
+  // Llamar a la función para mostrar usuarios al cargar la página
+  mostrarUsuarios();
+
+  function registrarUsuario() {
+  // Obtener datos del formulario
+  const nombre = $('#usuario_nombre').val();
+  const apellido = $('#usuario_apellido').val();
+  const nombreUsuario = $('#usuario_usuario').val();
+  const clave = $('#usuario_clave').val();
+  const email = $('#usuario_email').val();
+
+  // Validar que los campos no estén vacíos
+  if (!nombre || !apellido || !nombreUsuario || !clave || !email) {
+    Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: 'Por favor, complete todos los campos.',
+  });
+    return;
+  }
+
+  // Validar que los nombres y apellidos contengan solo letras
+  const letrasRegex = /^[A-Za-z]+$/;
+  if (!letrasRegex.test(nombre) || !letrasRegex.test(apellido)) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Los nombres y apellidos solo pueden contener letras.',
+        });
+    return;
+  }
+
+  // Realizar solicitud GET al servidor para verificar si el nombre de usuario ya existe
+  $.ajax({
+    type: 'GET',
+    url: 'http://localhost:3200/usuarios',
+    success: function (usuarios) {
+      const usuarioExistente = usuarios.find(usuario => usuario.usuario_usuario === nombreUsuario);
+
+      if (usuarioExistente) {
+        Swal.fire({
+        icon: 'warning',
+        title: 'Advertencia',
+        text: 'El nombre de usuario ya existe. Por favor, elija otro.',
+        });
+      } else {
+        // Continuar con la solicitud POST al servidor
+        const nuevoUsuario = {
+          usuario_nombre: nombre,
+          usuario_apellido: apellido,
+          usuario_usuario: nombreUsuario,
+          usuario_clave: clave,
+          usuario_email: email,
+        };
+
+        // Realizar solicitud POST al servidor
+        $.ajax({
+          type: 'POST',
+          url: 'http://localhost:3200/insertarUsuario',
+          contentType: 'application/json',
+          data: JSON.stringify(nuevoUsuario),
+          success: function (response) {
+            Swal.fire({
+            icon: 'success',
+            title: 'Exito',
+            text: 'Usuario registrado con éxito.',
+        });
+            // Actualizar la tabla después de la inserción
+            mostrarUsuarios();
+            // Limpiar los campos del formulario
+            $('#usuario_nombre').val('');
+            $('#usuario_apellido').val('');
+            $('#usuario_usuario').val('');
+            $('#usuario_clave').val('');
+            $('#usuario_email').val('');
+          },
+          error: function (error) {
+
+            Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al registrar usuario',
+            });
+
+            console.error(error);
+          }
+        });
+      }
+    },
+    error: function (error) {
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al obtener usuarios',
+        });
+      console.error(error);
+    }
+  });
+}
+
+  function eliminarUsuario() {
+    // Obtener usuario_id de la ventana modal
+    const usuarioId = $('#usuario_id_eliminar_modal').val();
+
+    // Realizar solicitud DELETE al servidor
+    $.ajax({
+      type: 'DELETE',
+      url: 'http://localhost:3200/usuarios/' + usuarioId,
+      success: function (response) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Exito',
+            text: 'Usuario eliminado con exito',
+        });
+
+        // Limpiar el campo de la ventana modal
+        $('#usuario_id_eliminar_modal').val('');
+        // Actualizar la tabla después de la eliminación
+        mostrarUsuarios();
+        // Cerrar la ventana modal
+        $('#eliminarModal').modal('hide');
+      },
+      error: function (error) {
+        Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al eliminar usuario',
+        });
+        console.error(error);
+      }
+    });
+  }
+
+  
+  function generarPDF() {
+  $.ajax({
+    type: 'GET',
+    url: 'http://localhost:3200/usuarios',
+    success: function (usuarios) {
+      // Crear un nuevo documento PDF
+      const pdf = new window.jspdf.jsPDF();
+
+      // Agregar imagen como logo
+      const logoUrl = './logo.png';
+      pdf.addImage(logoUrl, 'PNG', 10, 10, 190, 20);
+
+      // Agregar título
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(20);
+      pdf.setTextColor(52, 58, 64);
+      pdf.text('Reporte de Usuarios', pdf.internal.pageSize.width / 2, 40, { align: 'center' });
+
+      // Agregar tabla al PDF usando autoTable
+      pdf.autoTable({
+        head: [['ID', 'Nombre', 'Apellido', 'Usuario', 'Email']],
+        body: usuarios.map(usuario => [
+          usuario.usuario_id,
+          usuario.usuario_nombre,
+          usuario.usuario_apellido,
+          usuario.usuario_usuario,
+          usuario.usuario_email,
+        ]),
+        startY: 70,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [52, 58, 64],
+          textColor: 255,
+        },
+        bodyStyles: {
+          textColor: 52,
+        },
+      });
+
+      // Agregar pie de página con la fecha
+      const date = new Date();
+      const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+      const footerText = `Generado por: Alejandro Monsivais Guillen| Fecha: ${formattedDate}`;
+      pdf.setFont('helvetica', 'italic');
+      pdf.setFontSize(10);
+      pdf.setTextColor(52, 58, 64);
+      pdf.text(footerText, pdf.internal.pageSize.width / 2, pdf.internal.pageSize.height - 10, { align: 'center' });
+
+      const fileName = 'usuarios.pdf';
+      const filePath = 'C:\\Users\\aleja\\Downloads\\' + fileName;
+      pdf.save(filePath);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Éxito',
+        text: 'PDF generado y descargado con éxito en: ' + filePath,
+      });
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al obtener usuarios',
+      });
+      console.error(error);
+    }
+  });
+}
+
+</script>
+</body>
+</html>

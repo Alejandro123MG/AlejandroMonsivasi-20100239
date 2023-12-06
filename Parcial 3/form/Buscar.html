@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap Ejemplo</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+
+<!-- Contenedor para el formulario y los botones -->
+<div class="mb-3">
+  <label for="searchInput">Buscar por ID</label>
+  <select id="searchInput" class="form-control">
+    <!-- Opción en blanco -->
+    <option value="">Seleccionar ID</option>
+    <!-- Aquí se agregarán las opciones dinámicamente -->
+  </select>
+</div>
+
+<div class="mb-3">
+  <label for="searchInputUsuario">Buscar por Nombre de Usuario:</label>
+  <input type="text" id="searchInputUsuario" class="form-control" placeholder="Ingrese Nombre de Usuario...">
+</div>
+
+<div class="mb-3">
+  <button class="btn btn-primary" onclick="searchData()">Buscar</button>
+  <button class="btn btn-secondary" onclick="cambiarVista()">Regresar</button>
+  <button class="btn btn-danger" onclick="borrarBusqueda()" id="borrarBusquedaBtn" style="display:none">Borrar Búsqueda</button>
+</div>
+
+<!-- Contenedor para mostrar los resultados -->
+<div id="resultados"></div>
+
+<script>
+  // Función para obtener la lista de IDs disponibles
+  function obtenerIdsDisponibles() {
+    // Hacer una solicitud al servidor Express para obtener todos los usuarios
+    fetch('http://localhost:3200/usuarios')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al obtener datos');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Construir las opciones para la lista desplegable
+        const opcionesHTML = data.map(usuario => `<option value="${usuario.usuario_id}">${usuario.usuario_id}</option>`).join('');
+        // Agregar la opción en blanco y luego las opciones a la lista desplegable
+        document.getElementById('searchInput').innerHTML = '<option value="">Seleccionar ID</option>' + opcionesHTML;
+      })
+      .catch(error => {
+        console.error('Error al obtener datos:', error);
+      });
+  }
+
+  // Llamar a la función para obtener la lista de IDs disponibles al cargar la página
+  obtenerIdsDisponibles();
+
+  // Función para realizar la búsqueda por usuario_id o nombre de usuario
+  function searchData() {
+    const usuarioId = document.getElementById('searchInput').value;
+    const nombreUsuario = document.getElementById('searchInputUsuario').value;
+
+    // Verificar si el usuario_id está presente y es un número
+    if (usuarioId.trim() !== "" && !isNaN(usuarioId)) {
+      // Hacer la solicitud al servidor Express con el usuario_id
+      fetch(`http://localhost:3200/usuarios/${usuarioId}`)
+        .then(response => {
+          if (!response.ok) {
+            if (response.status === 404) {
+              throw new Error('Usuario no encontrado');
+            } else {
+              throw new Error('Error al obtener datos');
+            }
+          }
+          return response.json();
+        })
+        .then(data => {
+          mostrarResultados(data);
+        })
+        .catch(error => {
+          manejarError(error);
+        });
+    } else if (nombreUsuario.trim() !== "") {
+      // Hacer la solicitud al servidor Express con el nombre de usuario
+      fetch(`http://localhost:3200/usuarios/usuario/${encodeURIComponent(nombreUsuario)}`)
+        .then(response => {
+          if (!response.ok) {
+            if (response.status === 404) {
+              throw new Error('Usuario no encontrado');
+            } else {
+              throw new Error('Error al obtener datos');
+            }
+          }
+          return response.json();
+        })
+        .then(data => {
+          mostrarResultados(data);
+        })
+        .catch(error => {
+          manejarError(error);
+        });
+    } else {
+      // Limpiar el contenedor y mostrar un mensaje de error si no se proporciona un usuario_id o un nombre de usuario
+      document.getElementById('resultados').innerHTML = '<p>Ingrese un ID válido o un Nombre de Usuario.</p>';
+      // Ocultar el botón para borrar la búsqueda
+      document.getElementById('borrarBusquedaBtn').style.display = 'none';
+    }
+  }
+
+  // Función para mostrar los resultados
+  function mostrarResultados(data) {
+    const resultadosHTML = `
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">${data.usuario_nombre} ${data.usuario_apellido}</h5>
+          <p class="card-text">ID: ${data.usuario_id}</p>
+          <p class="card-text">Usuario: ${data.usuario_usuario}</p>
+          <p class="card-text">Correo Electrónico: ${data.usuario_email}</p>
+        </div>
+      </div>
+    `;
+    // Mostrar los resultados en el contenedor
+    document.getElementById('resultados').innerHTML = resultadosHTML;
+    // Mostrar el botón para borrar la búsqueda
+    document.getElementById('borrarBusquedaBtn').style.display = 'inline-block';
+  }
+
+  // Función para manejar errores
+  function manejarError(error) {
+    console.error('Error al obtener datos:', error);
+    // Limpiar el contenedor si el usuario no se encuentra
+    document.getElementById('resultados').innerHTML = '<p>Usuario no encontrado.</p>';
+    // Ocultar el botón para borrar la búsqueda
+    document.getElementById('borrarBusquedaBtn').style.display = 'none';
+  }
+
+  // Función para borrar la búsqueda y ocultar el botón
+  function borrarBusqueda() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchInputUsuario').value = '';
+    document.getElementById('resultados').innerHTML = '';
+    document.getElementById('borrarBusquedaBtn').style.display = 'none';
+  }
+
+  function cambiarVista() {
+    // Cambiar la ubicación actual a Formulario.html en la ruta completa
+    window.location.href = "http://localhost/PracticaGit/Parcial%203/form/Form.html";
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Modificar Usuario</title>
+</head>
+<style>
+  .custom-container {
+    border: 3px solid #18191a; 
+    border-radius: 10px;
+    padding: 30px;
+    margin-top: 100px;
+    max-width: 800px; 
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>  
+<body>
+
+<div class="container mt-5 custom-container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2 class="text-center mb-4">Modificar Usuario</h2>
+      <form id="modificarForm">
+        <div class="form-group">
+          <label for="usuario_id_modificar">Seleccionar ID:</label>
+          <select id="usuario_id_modificar" class="form-control" onchange="cargarDatosUsuario()">
+            <!-- Opciones se agregarán dinámicamente -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="usuario_nombre_modificar">Nombre:</label>
+          <input type="text" class="form-control" id="usuario_nombre_modificar" placeholder="Nombre">
+        </div>
+        <div class="form-group">
+          <label for="usuario_apellido_modificar">Apellido:</label>
+          <input type="text" class="form-control" id="usuario_apellido_modificar" placeholder="Apellido">
+        </div>
+        <div class="form-group">
+          <label for="usuario_usuario_modificar">Nombre de Usuario:</label>
+          <input type="text" class="form-control" id="usuario_usuario_modificar" placeholder="Nombre de Usuario">
+        </div>
+        <div class="form-group">
+          <label for="usuario_clave_modificar">Nueva Contraseña:</label>
+          <input type="password" class="form-control" id="usuario_clave_modificar" placeholder="Nueva Contraseña">
+        </div>
+        <div class="form-group">
+          <label for="confirmar_clave_modificar">Confirmar Nueva Contraseña:</label>
+          <input type="password" class="form-control" id="confirmar_clave_modificar" placeholder="Confirmar Nueva Contraseña">
+        </div>
+        <div class="form-group">
+          <label for="usuario_email_modificar">Correo Electrónico:</label>
+          <input type="email" class="form-control" id="usuario_email_modificar" placeholder="Correo Electrónico">
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary btn-sm" onclick="modificarUsuario()">Modificar</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="cambiarVista()">Regresar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Incluye SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- Incluye SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  // Función para cargar dinámicamente los IDs de usuarios al cargar la página
+  function cargarIDsUsuarios() {
+    fetch('http://localhost:3200/usuarios')
+      .then(response => response.json())
+      .then(data => {
+        const opcionesHTML = data.map(usuario => `<option value="${usuario.usuario_id}">${usuario.usuario_id}</option>`).join('');
+        document.getElementById('usuario_id_modificar').innerHTML = opcionesHTML;
+        
+      })
+      .catch(error => console.error('Error al cargar IDs de usuarios:', error));
+  }
+
+  // Llamar a la función para cargar IDs al cargar la página
+  cargarIDsUsuarios();
+
+  // Función para cargar datos del usuario seleccionado
+  function cargarDatosUsuario() {
+    const usuarioIdSeleccionado = document.getElementById('usuario_id_modificar').value;
+
+    if (usuarioIdSeleccionado.trim() !== "") {
+      fetch(`http://localhost:3200/usuarios/${usuarioIdSeleccionado}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Error al obtener datos del usuario');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Mostrar los datos en los campos de texto
+          document.getElementById('usuario_nombre_modificar').value = data.usuario_nombre;
+          document.getElementById('usuario_apellido_modificar').value = data.usuario_apellido;
+          document.getElementById('usuario_usuario_modificar').value = data.usuario_usuario;
+          document.getElementById('usuario_email_modificar').value = data.usuario_email;
+        })
+        .catch(error => console.error('Error al cargar datos del usuario:', error));
+    }
+  }
+
+  // Función para modificar usuario
+  function modificarUsuario() {
+    const usuarioId = document.getElementById('usuario_id_modificar').value;
+    const nombre = document.getElementById('usuario_nombre_modificar').value;
+    const apellido = document.getElementById('usuario_apellido_modificar').value;
+    const nombreUsuario = document.getElementById('usuario_usuario_modificar').value;
+    const nuevaClave = document.getElementById('usuario_clave_modificar').value;
+    const confirmarClave = document.getElementById('confirmar_clave_modificar').value;
+    const email = document.getElementById('usuario_email_modificar').value;
+
+    // Validar que los campos obligatorios no estén vacíos
+    if (!nombre || !apellido || !nombreUsuario || !email) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, complete todos los campos obligatorios.',
+        });
+
+      return;
+    }
+
+    // Validar que la nueva clave y la confirmación coincidan
+    if (nuevaClave !== confirmarClave) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'La nueva contraseña y la confirmación no coinciden.',
+        });
+      return;
+    }
+
+    // Crear objeto con los datos a modificar
+    const datosModificar = {
+      usuario_nombre: nombre,
+      usuario_apellido: apellido,
+      usuario_usuario: nombreUsuario,
+      usuario_email: email
+    };
+
+    // Agregar nueva clave al objeto si se proporcionó
+    if (nuevaClave.trim() !== "") {
+      datosModificar.usuario_clave = nuevaClave;
+    }
+
+    // Enviar solicitud para modificar usuario
+    fetch(`http://localhost:3200/usuarios/${usuarioId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(datosModificar)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al modificar usuario');
+        }
+        return response.json();
+      })
+      .then(data => {
+        
+      Swal.fire({
+            icon: 'success',
+            title: 'Exito',
+            text: 'Usuario modificado con éxito.',
+        });
+
+        // Limpiar campos después de la modificación
+        document.getElementById('usuario_id_modificar').value = '';
+        document.getElementById('usuario_nombre_modificar').value = '';
+        document.getElementById('usuario_apellido_modificar').value = '';
+        document.getElementById('usuario_usuario_modificar').value = '';
+        document.getElementById('usuario_clave_modificar').value = '';
+        document.getElementById('confirmar_clave_modificar').value = '';
+        document.getElementById('usuario_email_modificar').value = '';
+        // Volver a cargar los IDs después de la modificación
+        cargarIDsUsuarios();
+      })
+      .catch(error => console.error('Error al procesar la solicitud de modificación:', error));
+  }
+
+  // Función para cambiar la vista (regresar a la página principal)
+  function cambiarVista() {
+    window.location.href = "http://localhost/PracticaGit/Parcial%203/form/Form.html";
+  }
+</script>
+
+</body>
+</html>
